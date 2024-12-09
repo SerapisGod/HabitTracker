@@ -1,21 +1,21 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation'; // For navigation
-import { onAuthStateChanged, signOut } from 'firebase/auth'; // Firebase auth state listener
+import { useRouter } from 'next/navigation'; =
+import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth, db } from './_utils/firebase';
 import Link from 'next/link';
 import { collection, doc, addDoc, updateDoc, deleteDoc, onSnapshot, serverTimestamp } from 'firebase/firestore';
 
 export default function DailyTrackerPage() {
   const [habits, setHabits] = useState([]);
-  const [newHabit, setNewHabit] = useState(''); // State for the new habit input
+  const [newHabit, setNewHabit] = useState('');
   const router = useRouter(); 
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (!user) {
-        router.push('/landingpage'); // Redirect if not logged in
+        router.push('/landingpage');
         return;
       }
   
