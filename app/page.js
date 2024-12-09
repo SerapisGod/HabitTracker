@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, use } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation'; // For navigation
 import { onAuthStateChanged, signOut } from 'firebase/auth'; // Firebase auth state listener
 import { auth, db } from './_utils/firebase';
@@ -160,7 +160,9 @@ export default function DailyTrackerPage() {
               {/* Completion Button */}
               <button
                 onClick={() => toggleCompletion(habit.id)}
-                className={`p-2 text-white rounded ${habit.completed ? 'bg-green-500' : 'bg-gray-600'}`}
+                className={`p-2 text-white rounded ${
+                  habit.completion?.[new Date().getDate()] ? 'bg-green-500' : 'bg-gray-600'
+                }`}
               >
                 {habit.completed ? (
                   <span className="text-xl">&#10003;</span> // Checkmark

@@ -1,36 +1,66 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import Link from 'next/link'; // Import Link
+import Link from 'next/link';
+import { onAuthStateChanged } from 'firebase/auth';
+import { collection, doc, updateDoc, onSnapshot } from 'firebase/firestore';
+import { auth, db } from '../_utils/firebase';
+import { Router } from 'next/router';
 
 export default function MonthlyTrackerPage() {
   const [habits, setHabits] = useState([]);
   const [days, setDays] = useState([]);
 
   useEffect(() => {
-    const savedHabits = JSON.parse(localStorage.getItem('habits')) || [];
-    setHabits(savedHabits);
+    let unsubscribeHabits = () => {};
 
+    const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const habitsRef = collection(db, 'users', user.uid, 'habits');
+
+        unsubscribeHabits = onSnapshot(habitsRef, (snapshot) => {
+          const fetchedHabits = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          setHabits(fetchedHabits);
+        });
+      } else {
+        Router.push('/landingpage');  
+      }
+    });
+
+    // Set up the days of the current month
     const today = new Date();
     const totalDays = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
     const daysArray = Array.from({ length: totalDays }, (_, i) => i + 1);
     setDays(daysArray);
+
+    // Cleanup function
+    return () => {
+      unsubscribeAuth();
+      unsubscribeHabits();
+    };
   }, []);
 
-  const toggleCompletion = (habitId, day) => {
-    const updatedHabits = habits.map((habit) => {
-      if (habit.id === habitId) {
-        const updatedCompletion = {
-          ...habit.completion,
-          [day]: !habit.completion?.[day],
-        };
-        return { ...habit, completion: updatedCompletion };
-      }
-      return habit;
-    });
+  const toggleCompletion = async (habitId, day) => {
+    if (!auth.currentUser) return;
 
-    setHabits(updatedHabits);
-    localStorage.setItem('habits', JSON.stringify(updatedHabits));
+    const habitToUpdate = habits.find((habit) => habit.id === habitId);
+    if (!habitToUpdate) return;
+
+    const updatedCompletion = {
+      ...habitToUpdate.completion,
+      [day]: !habitToUpdate.completion?.[day],
+    };
+
+    const habitDocRef = doc(db, 'users', auth.currentUser.uid, 'habits', habitId);
+
+    try {
+      await updateDoc(habitDocRef, { completion: updatedCompletion });
+    } catch (error) {
+      console.error('Error updating habit completion:', error);
+    }
   };
 
   return (
