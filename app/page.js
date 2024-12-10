@@ -118,7 +118,7 @@ export default function DailyTrackerPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-800 p-4">
+    <div className="min-h-screen bg-gradient-to-r from-pink-400 to-yellow-400 p-4">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold text-white">Daily Tracker</h1>
         <div className="flex space-x-4">
@@ -140,7 +140,7 @@ export default function DailyTrackerPage() {
           type="text"
           value={newHabit}
           onChange={(e) => setNewHabit(e.target.value)} // Update state on input change
-          className="p-2 bg-gray-700 text-white rounded"
+          className="p-2 bg-white text-gray-800 rounded"
           placeholder="Add a new habit"
         />
         <button
@@ -154,8 +154,8 @@ export default function DailyTrackerPage() {
       {/* Habit List */}
       <div className="space-y-4">
         {habits.map((habit) => (
-          <div key={habit.id} className="flex justify-between items-center bg-gray-700 p-4 rounded">
-            <span className="text-white">{habit.name}</span>
+          <div key={habit.id} className="flex justify-between items-center bg-white p-4 rounded">
+            <span className="text-gray-800">{habit.name}</span>
             <div className="flex items-center space-x-4">
               {/* Completion Button */}
               <button
@@ -172,7 +172,7 @@ export default function DailyTrackerPage() {
               </button>
 
               {/* Display Streak */}
-              <span className="text-white">{calculateStreak(habit)} Day Streak</span>
+              <span className="text-gray-800">{calculateStreak(habit)} Day Streak</span>
 
               {/* Delete Button */}
               <button

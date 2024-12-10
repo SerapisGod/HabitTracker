@@ -64,7 +64,7 @@ export default function MonthlyTrackerPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-800 p-4">
+    <div className="min-h-screen bg-gradient-to-r from-pink-400 to-yellow-400 p-4">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold text-white">
           Monthly Tracker: {new Date().toLocaleString('default', { month: 'long' })}{' '}
@@ -77,34 +77,37 @@ export default function MonthlyTrackerPage() {
         </div>
       </div>
 
-      <table className="table-auto border-collapse border border-gray-700 w-full text-white">
-        <thead>
-          <tr>
-            <th className="border border-gray-600 p-2">Habit</th>
-            {days.map((day) => (
-              <th key={day} className="border border-gray-600 p-2">
-                {day}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {habits.map((habit) => (
-            <tr key={habit.id}>
-              <td className="border border-gray-600 p-2">{habit.name}</td>
+      {/* Habit Table Section */}
+      <div className="overflow-x-auto bg-white rounded-lg shadow p-4">
+        <table className="table-auto border-collapse border border-white-700 w-full text-sm text-gray-800">
+          <thead>
+            <tr>
+              <th className="border border-gray-600 p-2 bg-gray-100">Habit</th>
               {days.map((day) => (
-                <td
-                  key={day}
-                  className={`border border-gray-600 p-2 cursor-pointer ${
-                    habit.completion?.[day] ? 'bg-green-500' : 'bg-gray-700'
-                  }`}
-                  onClick={() => toggleCompletion(habit.id, day)}
-                ></td>
+                <th key={day} className="border border-gray-600 p-2 bg-gray-100">
+                  {day}
+                </th>
               ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {habits.map((habit) => (
+              <tr key={habit.id}>
+                <td className="border border-gray-600 p-2 font-semibold">{habit.name}</td>
+                {days.map((day) => (
+                  <td
+                    key={day}
+                    className={`border border-gray-600 p-2 cursor-pointer ${
+                      habit.completion?.[day] ? 'bg-green-400' : 'bg-gray-300'
+                    }`}
+                    onClick={() => toggleCompletion(habit.id, day)}
+                  ></td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
